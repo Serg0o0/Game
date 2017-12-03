@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Star Wars", "Star Wars\Star Wars.vcxproj", "{0230B747-F0F9-4270-A248-F0AF0C6F18A7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Star Wars", "Star Wars\Star Wars.vcxproj", "{8E36385A-23C2-4B77-ADCE-0446AF45B3C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0230B747-F0F9-4270-A248-F0AF0C6F18A7}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0230B747-F0F9-4270-A248-F0AF0C6F18A7}.Debug|Win32.Build.0 = Debug|Win32
-		{0230B747-F0F9-4270-A248-F0AF0C6F18A7}.Release|Win32.ActiveCfg = Release|Win32
-		{0230B747-F0F9-4270-A248-F0AF0C6F18A7}.Release|Win32.Build.0 = Release|Win32
+		{8E36385A-23C2-4B77-ADCE-0446AF45B3C2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8E36385A-23C2-4B77-ADCE-0446AF45B3C2}.Debug|Win32.Build.0 = Debug|Win32
+		{8E36385A-23C2-4B77-ADCE-0446AF45B3C2}.Release|Win32.ActiveCfg = Release|Win32
+		{8E36385A-23C2-4B77-ADCE-0446AF45B3C2}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
