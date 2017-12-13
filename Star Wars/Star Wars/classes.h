@@ -5,47 +5,67 @@ using namespace sf;
 #ifndef __CLASSES_H__ 
 #define __CLASSES_H__ 
 
-class Hero
+class Entity
 {
 protected:
-	int hp, dir;
+	int hp, score;
 	bool life;
 	float speed, dx, dy, posX, posY;
-	enum {left, right, up, down, stay } state;
+	enum { left, right, up, down, stay } state;
+	enum { pers, bullet } type;
+	std::string name;
 	Texture texture;
 	Sprite sprite;
-		
+
 public:
-	Hero();
 	Sprite getimage();
-	void update(float);
+	FloatRect getRect();
+	virtual void update(float) = 0;
 	int getHP();
+	void setHP(int);
 	float getposX();
 	float getposY();
-	void setDir(int);
-	void setSpeed(float);
+	bool getLife();
+	void setLife(bool);
+	void setScore(int);
+	int getScore();
+};
+
+class Hero : public Entity
+{
+public:
+	Hero();
+	void update(float);
 	void control();
 };
 
-class Enemy : public Hero
+class Enemy : public Entity
 {
 public:
 	Enemy();
+	void update(float);
 };
 
-class Bullet
+class Bullet_H : public Entity
 {
 private:
 	int damage;
-	float posX, posY;
-	Texture texture;
-	Sprite sprite;
 
 public:
-	Bullet();
-	Sprite getimage();
-	int hit(int);
-	void setSpeed(float);
+	Bullet_H(float, float);
+	void update(float);
+	int getDamage();
+};
+
+class Bullet_E : public Entity
+{
+private:
+	int damage;
+
+public:
+	Bullet_E(float, float);
+	void update(float);
+	int getDamage();
 };
 
  #endif

@@ -1,4 +1,5 @@
 #include "classes.h"
+#include <iostream>
 
 Hero::Hero() 
 {
@@ -6,8 +7,9 @@ Hero::Hero()
 	hp = 100;
 	posX = (weigth - size_img) / 2;
 	posY = height - size_img;
-	dir = 0;
 	speed = 0.3;
+	type = pers;
+	score = 0;
 
 	texture.loadFromFile("images/hero.png");
 	sprite.setTexture(texture);
@@ -17,46 +19,91 @@ Hero::Hero()
 Enemy::Enemy()
 {
 	hp = 100;
-	posX = (weigth - size_img) / 2;
-	posY = height - size_img;
+	posX = rand() % (weigth - size_img);
+	posY = 0;
+	speed = 0.1;
+	type = pers;
 
 	texture.loadFromFile("images/enemy.png");
-	sprite.setTexture(texture);
-	sprite.setPosition(posX, 0);
-}
-
-Bullet::Bullet()
-{
-	damage = 50;
-	posX = 400;
-	posY = 300;
-
-	texture.loadFromFile("images/bullet_hero.png");
 	sprite.setTexture(texture);
 	sprite.setPosition(posX, posY);
 }
 
-Sprite Hero::getimage()
+Bullet_H::Bullet_H(float x, float y)
+{
+	damage = 50;
+	posX = x;
+	posY = y;
+	type = bullet;
+	speed = 0.5;
+
+	texture.loadFromFile("images/bullet_hero.png");
+	sprite.setTexture(texture);
+}
+
+Bullet_E::Bullet_E(float x, float y)
+{
+	damage = 50;
+	posX = x;
+	posY = y;
+	type = bullet;
+	speed = 0.3;
+
+	texture.loadFromFile("images/bullet_enemy.png");
+	sprite.setTexture(texture);
+}
+
+int Bullet_H::getDamage()
+{
+	return damage;
+}
+
+int Bullet_E::getDamage()
+{
+	return damage;
+}
+
+Sprite Entity::getimage()
 {
 	return sprite;
 }
 
-Sprite Bullet::getimage()
+bool Entity::getLife()
 {
-	return sprite;
+	return life;
 }
 
-int Hero::getHP()
+void Entity::setLife(bool l)
+{
+	life = l;
+}
+
+void Entity::setScore(int s)
+{
+	score += s;
+}
+
+int Entity::getScore()
+{
+	return score;
+}
+
+int Entity::getHP()
 {
 	return hp;
 }
 
-float Hero::getposX()
+void Entity::setHP(int h)
+{
+	hp += h;
+}
+
+float Entity::getposX()
 {
 	return posX;
 }
 
-float Hero::getposY()
+float Entity::getposY()
 {
 	return posY;
 }
@@ -66,8 +113,6 @@ void Hero::update(float time)
 	if (life)
 	{
 		control();
-		//dx = 0;
-		//dy = 0;
 		switch (state)
 		{
 		case right: 
@@ -89,7 +134,6 @@ void Hero::update(float time)
 		default:
 			break;
 		}
-
 
 		if ((posX > 0) && (dx < 0)) 
 			posX += dx*time;
@@ -113,16 +157,6 @@ void Hero::update(float time)
 	}
 }
 
-void Hero::setDir(int d)
-{
-	dir = d;
-}
-
-void Hero::setSpeed(float s)
-{
-	speed = s;
-}
-
 void Hero::control()
 { 
 	if ((Keyboard::isKeyPressed(Keyboard::Left)) || (Keyboard::isKeyPressed(Keyboard::A))) 
@@ -144,4 +178,76 @@ void Hero::control()
 	{ 
 		state = down; 
 	} 
+}
+
+void Enemy::update(float time)
+{
+	if (life) 
+	{
+		dy = speed;
+
+		if ((posY >= 0) && (posY < (height - size_img)))
+			posY += dy*time;
+
+		if (posY >= (height - size_img)) 
+		{
+			posY = 0;
+			posX = rand() % (weigth - size_img);
+		}
+		
+		sprite.setPosition(posX, posY);
+
+		if (hp <= 0)
+		{ 
+			life = false; 
+		}
+	}
+}
+
+void Bullet_H::update(float time)
+{
+	if (life) 
+	{
+		dy = -speed;
+
+		posY += dy*time;
+
+		sprite.setPosition(posX + size_img / 2 - size_bul / 2, posY - (4 * size_bul));
+
+		if (posY <= 0) 
+		{
+			life = false;
+		}
+	}
+}
+
+void Bullet_E::update(float time)
+{
+	if (life) 
+	{
+		dy = speed;
+
+		posY += dy*time;
+
+		sprite.setPosition(posX + size_img / 2 - size_bul / 2, posY + size_img);
+
+		if (posY >= height) 
+		{
+			life = false;
+		}
+	}
+}
+
+FloatRect Entity::getRect()
+{
+	if (type == pers) 
+	{
+		FloatRect FR(posX, posY, size_img, size_img); 
+		return FR;
+	}
+	else
+	{
+		FloatRect FR(posX, posY, size_bul, 4*size_bul); 
+		return FR;
+	}
 }
