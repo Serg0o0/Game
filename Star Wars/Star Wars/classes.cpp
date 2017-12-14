@@ -23,6 +23,7 @@ Enemy::Enemy()
 	posY = 0;
 	speed = 0.1;
 	type = pers;
+	shoot_time = 0;
 
 	texture.loadFromFile("images/enemy.png");
 	sprite.setTexture(texture);
@@ -204,6 +205,20 @@ void Enemy::update(float time)
 	}
 }
 
+bool Entity::shoot_delay()
+{
+	//static float t = 0;
+
+	shoot_time = time.getElapsedTime().asMilliseconds();
+	if (shoot_time >= delay)
+	{
+		time.restart();
+		return true;
+	}
+	else
+		return false;
+}
+
 void Bullet_H::update(float time)
 {
 	if (life) 
@@ -250,4 +265,5 @@ FloatRect Entity::getRect()
 		FloatRect FR(posX, posY, size_bul, 4*size_bul); 
 		return FR;
 	}
+	
 }

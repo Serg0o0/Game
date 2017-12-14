@@ -8,7 +8,8 @@ using namespace sf;
 class Entity
 {
 protected:
-	int hp, score;
+	int hp, score, shoot_time;
+	Clock time;
 	bool life;
 	float speed, dx, dy, posX, posY;
 	enum { left, right, up, down, stay } state;
@@ -29,6 +30,7 @@ public:
 	void setLife(bool);
 	void setScore(int);
 	int getScore();
+	bool shoot_delay();
 };
 
 class Hero : public Entity

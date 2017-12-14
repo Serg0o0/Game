@@ -7,7 +7,8 @@
 int main()
 {
 	Hero hero;
-	Enemy enemy;
+	int enemy_count = 3;
+	
 
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(weigth, height, desktop.bitsPerPixel), "Star Wars");
@@ -19,6 +20,9 @@ int main()
 	Text text_score("", font, 20);
 	text_score.setColor(Color::Red);
 
+	std::list<Enemy*>  enemies; 
+	std::list<Enemy*>::iterator it_enemy; 
+
 	std::list<Bullet_H*>  bul_h; 
 	std::list<Bullet_H*>::iterator it_h; 
 
@@ -27,8 +31,14 @@ int main()
 
 	float CurrentFrame = 0;
 	Clock clock;
+	Clock clock2;
 
-	float time2 = 0;
+	int shoot_time = 0;
+
+	for (int i = 0; i < enemy_count; i++)
+	{
+		enemies.push_back(new Enemy());
+	}
 
 	while (window.isOpen())
 	{
@@ -43,14 +53,22 @@ int main()
 				window.close();
 
 			// Выстрел по нажатию пробела
+			shoot_time = clock2.getElapsedTime().asMilliseconds();
 			if (event.type == sf::Event::KeyPressed)
 			{
-				if (event.key.code == sf::Keyboard::Space)
+				if ((event.key.code == sf::Keyboard::Space) && (hero.getLife()) && (shoot_time >= delay / 3))
 				{
+					clock2.restart();
 					bul_h.push_back(new Bullet_H(hero.getposX(), hero.getposY()));
 				}
 			}
 
+		}
+
+		// Оживляем врагов
+		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
+		{
+			(*it_enemy)->update(time);
 		}
 
 		// Оживляем пули героя
@@ -58,6 +76,7 @@ int main()
 		{
 			(*it_h)->update(time);
 		}
+
 		// удаляем пули героя, если они улетели за карту или попали во врага
 		for (it_h = bul_h.begin(); it_h != bul_h.end();)
 		{
@@ -71,35 +90,44 @@ int main()
 			}
 		}
 
-		if (enemy.getLife())
+		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
 		{
-			// Выстрелы врага
-			time2 += time;
-			if (time2 >= time * delay)
+			if ((*it_enemy)->getLife())
 			{
-				bul_e.push_back(new Bullet_E(enemy.getposX(), enemy.getposY()));
-				time2 = 0;
-			}
-			// Оживляем пули врага
-			for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
-			{
-				(*it_e)->update(time);
-			}
-			// Обработка попадания во врага
-			for (it_h = bul_h.begin(); it_h != bul_h.end(); it_h++)
-			{
-				if (enemy.getRect().intersects((*it_h)->getRect()))
+				// Выстрелы врага
+				//time2 += time;
+				if ((*it_enemy)->shoot_delay()  /*time2 >= time * delay*/)
 				{
-					// После смерти врага его пули удаляются
-					for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
+					bul_e.push_back(new Bullet_E((*it_enemy)->getposX(), (*it_enemy)->getposY()));
+					//time2 = 0;
+				}
+				// Оживляем пули врага
+				/*for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
+				{
+					(*it_e)->update(time);
+				}*/
+				// Обработка попадания во врага
+				for (it_h = bul_h.begin(); it_h != bul_h.end(); it_h++)
+				{
+					if ((*it_enemy)->getRect().intersects((*it_h)->getRect()))
 					{
-						(*it_e)->setLife(false);
+						// После смерти врага его пули удаляются
+						for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
+						{
+							(*it_e)->setLife(false);
+						}
+						(*it_enemy)->setHP(-(*it_h)->getDamage());
+						(*it_h)->setLife(false);
+						hero.setScore(100);
 					}
-					enemy.setHP(-(*it_h)->getDamage());
-					(*it_h)->setLife(false);
-					hero.setScore(100);
 				}
 			}
+		}
+
+		// Оживляем пули врага
+		for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
+		{
+			(*it_e)->update(time);
 		}
 
 		// Обработка попадания в героя
@@ -127,7 +155,6 @@ int main()
 			}
 		}
 		
-		enemy.update(time);
 		hero.update(time);
 		
 		window.clear(); 
@@ -137,9 +164,12 @@ int main()
 			window.draw(hero.getimage());
 		}
 
-		if (enemy.getLife())
+		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
 		{
-			window.draw(enemy.getimage());
+			if ((*it_enemy)->getLife())
+			{
+				window.draw((*it_enemy)->getimage());
+			}
 		}
 
 		for (it_h = bul_h.begin(); it_h != bul_h.end(); it_h++)
@@ -168,6 +198,8 @@ int main()
 
 		window.display();
 	}
+
+
 	return 0;
 }
 
