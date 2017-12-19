@@ -7,8 +7,8 @@
 int main()
 {
 	Hero hero;
-	int enemy_count = 3;
-	
+	int enemy_count = 4;
+	int enemy_in_game = 0;	
 
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(weigth, height, desktop.bitsPerPixel), "Star Wars");
@@ -19,6 +19,8 @@ int main()
 	text_hp.setColor(Color::Red);
 	Text text_score("", font, 20);
 	text_score.setColor(Color::Red);
+	Text text_lose("", font, 50);
+	text_lose.setColor(Color::Red);
 
 	std::list<Enemy*>  enemies; 
 	std::list<Enemy*>::iterator it_enemy; 
@@ -32,13 +34,17 @@ int main()
 	float CurrentFrame = 0;
 	Clock clock;
 	Clock clock2;
+	Clock clock3;
 
 	int shoot_time = 0;
+	int time2 = 0;
 
 	for (int i = 0; i < enemy_count; i++)
 	{
 		enemies.push_back(new Enemy());
+		enemy_in_game++;
 	}
+
 
 	while (window.isOpen())
 	{
@@ -56,13 +62,12 @@ int main()
 			shoot_time = clock2.getElapsedTime().asMilliseconds();
 			if (event.type == sf::Event::KeyPressed)
 			{
-				if ((event.key.code == sf::Keyboard::Space) && (hero.getLife()) && (shoot_time >= delay / 3))
+				if ((event.key.code == sf::Keyboard::Space) && (hero.getLife()) && (shoot_time >= delay / 12))
 				{
 					clock2.restart();
 					bul_h.push_back(new Bullet_H(hero.getposX(), hero.getposY()));
 				}
 			}
-
 		}
 
 		// Оживляем врагов
@@ -77,7 +82,7 @@ int main()
 			(*it_h)->update(time);
 		}
 
-		// удаляем пули героя, если они улетели за карту или попали во врага
+		// Удаляем пули героя, если они улетели за карту или попали во врага
 		for (it_h = bul_h.begin(); it_h != bul_h.end();)
 		{
 			if ((*it_h)->getLife() == false)	
@@ -90,37 +95,39 @@ int main()
 			}
 		}
 
+		// Выстрелы врага
 		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
 		{
 			if ((*it_enemy)->getLife())
 			{
-				// Выстрелы врага
-				//time2 += time;
-				if ((*it_enemy)->shoot_delay()  /*time2 >= time * delay*/)
+				if ((*it_enemy)->shoot_delay())
 				{
 					bul_e.push_back(new Bullet_E((*it_enemy)->getposX(), (*it_enemy)->getposY()));
-					//time2 = 0;
 				}
-				// Оживляем пули врага
-				/*for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
-				{
-					(*it_e)->update(time);
-				}*/
-				// Обработка попадания во врага
+				// Проверяем попадание во врага
 				for (it_h = bul_h.begin(); it_h != bul_h.end(); it_h++)
 				{
 					if ((*it_enemy)->getRect().intersects((*it_h)->getRect()))
 					{
-						// После смерти врага его пули удаляются
-						for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
-						{
-							(*it_e)->setLife(false);
-						}
+						clock3.restart();
 						(*it_enemy)->setHP(-(*it_h)->getDamage());
 						(*it_h)->setLife(false);
 						hero.setScore(100);
 					}
 				}
+			}
+			else
+				time2 = clock3.getElapsedTime().asMilliseconds();
+		}
+
+		// После убийства одного врага, добавляем "нового"  
+		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
+		{
+			if (!((*it_enemy)->getLife()) && (time2 >= 800))
+			{
+				clock3.restart();
+				(*it_enemy)->setLife(true);
+				(*it_enemy)->load();
 			}
 		}
 
@@ -169,7 +176,7 @@ int main()
 			if ((*it_enemy)->getLife())
 			{
 				window.draw((*it_enemy)->getimage());
-			}
+			}			
 		}
 
 		for (it_h = bul_h.begin(); it_h != bul_h.end(); it_h++)
@@ -182,6 +189,18 @@ int main()
 		{
 			if ((*it_e)->getLife())
 				window.draw((*it_e)->getimage());
+		}
+
+		// Если герой умер или враги смогли пролететь, то вы проиграли
+		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
+		{
+			if (((*it_enemy)->getposY() >= (height - size_img - 5)) || !(hero.getLife()))
+			{
+				hero.setLife(false);
+				text_lose.setString("You are lose!");
+				text_lose.setPosition(150, height / 2 - 50);
+				window.draw(text_lose);
+			}
 		}
 		
 		// Вывод жизней и очков на экран
@@ -197,6 +216,7 @@ int main()
 		window.draw(text_score);
 
 		window.display();
+
 	}
 
 

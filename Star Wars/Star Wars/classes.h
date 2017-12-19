@@ -13,7 +13,7 @@ protected:
 	bool life;
 	float speed, dx, dy, posX, posY;
 	enum { left, right, up, down, stay } state;
-	enum { pers, bullet } type;
+	enum { pers, bullet_e, bullet_h } type;
 	std::string name;
 	Texture texture;
 	Sprite sprite;
@@ -46,6 +46,7 @@ class Enemy : public Entity
 public:
 	Enemy();
 	void update(float);
+	void load();
 };
 
 class Bullet_H : public Entity

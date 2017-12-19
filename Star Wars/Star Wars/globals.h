@@ -5,6 +5,6 @@ const int weigth = 800;
 const int height = 600;
 const int size_img = 50;
 const int size_bul = 5;
-const int delay = 600;
+const int delay = 2400;
  
 #endif

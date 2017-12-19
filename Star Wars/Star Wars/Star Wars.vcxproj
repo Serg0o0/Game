@@ -39,8 +39,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\!University\3 курс\ТП\Практика\Git\Star Wars\Star Wars\SFML\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\!University\3 курс\ТП\Практика\Git\Star Wars\Star Wars\SFML\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\21316\Shablinskiy\Game\Game\Star Wars\Star Wars\SFML\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\21316\Shablinskiy\Game\Game\Star Wars\Star Wars\SFML\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

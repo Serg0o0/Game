@@ -19,15 +19,14 @@ Hero::Hero()
 Enemy::Enemy()
 {
 	hp = 100;
-	posX = rand() % (weigth - size_img);
-	posY = 0;
-	speed = 0.1;
+	speed = 0.02;
 	type = pers;
-	shoot_time = 0;
+	shoot_time = 2500;
 
 	texture.loadFromFile("images/enemy.png");
 	sprite.setTexture(texture);
 	sprite.setPosition(posX, posY);
+	load();
 }
 
 Bullet_H::Bullet_H(float x, float y)
@@ -35,7 +34,7 @@ Bullet_H::Bullet_H(float x, float y)
 	damage = 50;
 	posX = x;
 	posY = y;
-	type = bullet;
+	type = bullet_h;
 	speed = 0.5;
 
 	texture.loadFromFile("images/bullet_hero.png");
@@ -47,11 +46,17 @@ Bullet_E::Bullet_E(float x, float y)
 	damage = 50;
 	posX = x;
 	posY = y;
-	type = bullet;
-	speed = 0.3;
+	type = bullet_e;
+	speed = 0.1;
 
 	texture.loadFromFile("images/bullet_enemy.png");
 	sprite.setTexture(texture);
+}
+
+void Enemy::load()
+{
+	posX = rand() % (weigth - size_img);
+	posY = 0;
 }
 
 int Bullet_H::getDamage()
@@ -77,6 +82,10 @@ bool Entity::getLife()
 void Entity::setLife(bool l)
 {
 	life = l;
+	if (l)
+	{
+		hp = 100;
+	}
 }
 
 void Entity::setScore(int s)
@@ -207,8 +216,6 @@ void Enemy::update(float time)
 
 bool Entity::shoot_delay()
 {
-	//static float t = 0;
-
 	shoot_time = time.getElapsedTime().asMilliseconds();
 	if (shoot_time >= delay)
 	{
@@ -257,12 +264,19 @@ FloatRect Entity::getRect()
 {
 	if (type == pers) 
 	{
-		FloatRect FR(posX, posY, size_img, size_img); 
+		FloatRect FR(posX - size_img / 2, posY, size_img, size_img); 
 		return FR;
 	}
-	else
+
+	if (type == bullet_e) 
 	{
-		FloatRect FR(posX, posY, size_bul, 4*size_bul); 
+		FloatRect FR(posX, posY + 10 * size_bul, size_bul, 4 * size_bul); 
+		return FR;
+	}
+
+	if (type == bullet_h) 
+	{
+		FloatRect FR(posX, posY, size_bul, 4 * size_bul); 
 		return FR;
 	}
 	
