@@ -39,8 +39,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\21316\Shablinskiy\Game\Game\Star Wars\Star Wars\SFML\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\21316\Shablinskiy\Game\Game\Star Wars\Star Wars\SFML\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\!University\3 курс\ТП\Практика\Git\Game\Star Wars\Star Wars\SFML\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\!University\3 курс\ТП\Практика\Git\Game\Star Wars\Star Wars\SFML\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -78,12 +78,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="classes.cpp" />
+    <ClCompile Include="bonus.cpp" />
+    <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="entity.cpp" />
+    <ClCompile Include="globals.cpp" />
+    <ClCompile Include="hero.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="classes.h" />
+    <ClInclude Include="bonus.h" />
+    <ClInclude Include="bullet.h" />
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="entity.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="hero.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

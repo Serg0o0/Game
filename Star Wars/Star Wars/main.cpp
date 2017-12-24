@@ -1,5 +1,8 @@
 // main.cpp
-#include "classes.h"
+#include "hero.h"
+#include "enemy.h"
+#include "bullet.h"
+#include "bonus.h"
 #include <iostream> 
 #include <sstream>
 #include <list>
@@ -7,6 +10,8 @@
 int main()
 {
 	Hero hero;
+	Bonus HP(0);
+	Bonus Armor(1);
 	int enemy_count = 4;
 	int enemy_in_game = 0;	
 
@@ -21,15 +26,16 @@ int main()
 	text_score.setColor(Color::Red);
 	Text text_lose("", font, 50);
 	text_lose.setColor(Color::Red);
+	Text text_armor("", font, 20);
+	text_armor.setColor(Color::Green);
 
 	std::list<Enemy*>  enemies; 
 	std::list<Enemy*>::iterator it_enemy; 
 
-	std::list<Bullet_H*>  bul_h; 
-	std::list<Bullet_H*>::iterator it_h; 
-
-	std::list<Bullet_E*>  bul_e; 
-	std::list<Bullet_E*>::iterator it_e; 
+	std::list<Bullet*>  bul_h; 
+	std::list<Bullet*>  bul_e; 
+	std::list<Bullet*>::iterator it_h; 
+	std::list<Bullet*>::iterator it_e; 
 
 	float CurrentFrame = 0;
 	Clock clock;
@@ -65,7 +71,7 @@ int main()
 				if ((event.key.code == sf::Keyboard::Space) && (hero.getLife()) && (shoot_time >= delay / 12))
 				{
 					clock2.restart();
-					bul_h.push_back(new Bullet_H(hero.getposX(), hero.getposY()));
+					bul_h.push_back(new Bullet("hero", hero.getposX(), hero.getposY()));
 				}
 			}
 		}
@@ -102,7 +108,7 @@ int main()
 			{
 				if ((*it_enemy)->shoot_delay())
 				{
-					bul_e.push_back(new Bullet_E((*it_enemy)->getposX(), (*it_enemy)->getposY()));
+					bul_e.push_back(new Bullet("enemy", (*it_enemy)->getposX(), (*it_enemy)->getposY()));
 				}
 				// Проверяем попадание во врага
 				for (it_h = bul_h.begin(); it_h != bul_h.end(); it_h++)
@@ -117,7 +123,9 @@ int main()
 				}
 			}
 			else
+			{
 				time2 = clock3.getElapsedTime().asMilliseconds();
+			}
 		}
 
 		// После убийства одного врага, добавляем "нового"  
@@ -127,7 +135,6 @@ int main()
 			{
 				clock3.restart();
 				(*it_enemy)->setLife(true);
-				(*it_enemy)->load();
 			}
 		}
 
@@ -144,11 +151,34 @@ int main()
 			{
 				if (hero.getRect().intersects((*it_e)->getRect()))
 				{
-					hero.setHP(-(*it_e)->getDamage());
+					if (hero.getArmor())
+					{
+						hero.setArmor(-(*it_e)->getDamage());
+					}
+					else
+					{
+						hero.setHP(-(*it_e)->getDamage());
+					}
 					(*it_e)->setLife(false);
 				}
 			}
 		}
+
+		// Обработка сбора бонусов
+		if (hero.getLife())
+		{
+			if (hero.getRect().intersects(HP.getRect()))
+			{
+				hero.setHP(HP.getHP());
+				HP.setLife(false);
+			}
+			if (hero.getRect().intersects(Armor.getRect()))
+			{
+				Armor.setLife(false);
+				hero.setArmor(true);
+			}
+		}
+
 		// Удаляем пули врага, если они улетели за карту или попали в героя
 		for (it_e = bul_e.begin(); it_e != bul_e.end();)
 		{
@@ -162,6 +192,8 @@ int main()
 			}
 		}
 		
+		HP.update(time);
+		Armor.update(time);
 		hero.update(time);
 		
 		window.clear(); 
@@ -169,6 +201,16 @@ int main()
 		if (hero.getLife())
 		{
 			window.draw(hero.getimage());
+		}
+
+		if (HP.getLife())
+		{
+			window.draw(HP.getimage());
+		}
+
+		if (Armor.getLife())
+		{
+			window.draw(Armor.getimage());
 		}
 
 		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
@@ -194,13 +236,23 @@ int main()
 		// Если герой умер или враги смогли пролететь, то вы проиграли
 		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
 		{
-			if (((*it_enemy)->getposY() >= (height - size_img - 5)) || !(hero.getLife()))
+			if (((*it_enemy)->getposY() >= (height - size_enemy - 5)) || !(hero.getLife()))
 			{
 				hero.setLife(false);
 				text_lose.setString("You are lose!");
 				text_lose.setPosition(150, height / 2 - 50);
 				window.draw(text_lose);
 			}
+		}
+
+		// Вывод количества брони, если она есть
+		if (hero.getArmor())
+		{
+			std::ostringstream playerArmorString;
+			playerArmorString << hero.getArmor_HP();
+			text_armor.setString("Armor: " + playerArmorString.str());
+			text_armor.setPosition(350, 0);
+			window.draw(text_armor);
 		}
 		
 		// Вывод жизней и очков на экран
