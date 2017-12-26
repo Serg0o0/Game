@@ -8,14 +8,14 @@ class Hero : public Entity
 {
 private:
 	bool armor;
-	int armor_hp;
+	int armorHp;
 
 public:
 	Hero();
 	void update(float);
 	void control();
 	bool getArmor();
-	int getArmor_HP();
+	int getArmorHp();
 	void setArmor(bool);
 	void setArmor(int);
 };

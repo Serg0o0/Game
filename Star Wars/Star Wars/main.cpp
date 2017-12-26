@@ -12,45 +12,42 @@ int main()
 	Hero hero;
 	Bonus HP(0);
 	Bonus Armor(1);
-	int enemy_count = 4;
-	int enemy_in_game = 0;	
+	int enemyCount = 4;
+	int enemyInGame = 0;	
 
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(sf::VideoMode(weigth, height, desktop.bitsPerPixel), "Star Wars");
 
 	Font font;
 	font.loadFromFile("zealot.ttf");
-	Text text_hp("", font, 20);
-	text_hp.setColor(Color::Red);
-	Text text_score("", font, 20);
-	text_score.setColor(Color::Red);
-	Text text_lose("", font, 50);
-	text_lose.setColor(Color::Red);
-	Text text_armor("", font, 20);
-	text_armor.setColor(Color::Green);
+	Text textHp("", font, 20);
+	textHp.setColor(Color::Red);
+	Text textScore("", font, 20);
+	textScore.setColor(Color::Red);
+	Text textLose("", font, 50);
+	textLose.setColor(Color::Red);
+	Text textArmor("", font, 20);
+	textArmor.setColor(Color::Green);
 
 	std::list<Enemy*>  enemies; 
-	std::list<Enemy*>::iterator it_enemy; 
+	std::list<Enemy*>::iterator itEnemy; 
 
-	std::list<Bullet*>  bul_h; 
-	std::list<Bullet*>  bul_e; 
-	std::list<Bullet*>::iterator it_h; 
-	std::list<Bullet*>::iterator it_e; 
+	std::list<Bullet*>  bullHero; 
+	std::list<Bullet*>  bullEnemy; 
+	std::list<Bullet*>::iterator itBull; 
 
-	float CurrentFrame = 0;
 	Clock clock;
 	Clock clock2;
 	Clock clock3;
 
-	int shoot_time = 0;
+	int shootTime = 0;
 	int time2 = 0;
 
-	for (int i = 0; i < enemy_count; i++)
+	for (int i = 0; i < enemyCount; i++)
 	{
 		enemies.push_back(new Enemy());
-		enemy_in_game++;
+		enemyInGame++;
 	}
-
 
 	while (window.isOpen())
 	{
@@ -65,59 +62,59 @@ int main()
 				window.close();
 
 			// Выстрел по нажатию пробела
-			shoot_time = clock2.getElapsedTime().asMilliseconds();
+			shootTime = clock2.getElapsedTime().asMilliseconds();
 			if (event.type == sf::Event::KeyPressed)
 			{
-				if ((event.key.code == sf::Keyboard::Space) && (hero.getLife()) && (shoot_time >= delay / 12))
+				if ((event.key.code == sf::Keyboard::Space) && (hero.getLife()) && (shootTime >= delay / 12))
 				{
 					clock2.restart();
-					bul_h.push_back(new Bullet("hero", hero.getposX(), hero.getposY()));
+					bullHero.push_back(new Bullet("hero", hero.getPosX(), hero.getPosY()));
 				}
 			}
 		}
 
 		// Оживляем врагов
-		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
+		for (itEnemy = enemies.begin(); itEnemy != enemies.end(); itEnemy++)
 		{
-			(*it_enemy)->update(time);
+			(*itEnemy)->update(time);
 		}
 
 		// Оживляем пули героя
-		for (it_h = bul_h.begin(); it_h != bul_h.end(); it_h++)
+		for (itBull = bullHero.begin(); itBull != bullHero.end(); itBull++)
 		{
-			(*it_h)->update(time);
+			(*itBull)->update(time);
 		}
 
 		// Удаляем пули героя, если они улетели за карту или попали во врага
-		for (it_h = bul_h.begin(); it_h != bul_h.end();)
+		for (itBull = bullHero.begin(); itBull != bullHero.end();)
 		{
-			if ((*it_h)->getLife() == false)	
+			if ((*itBull)->getLife() == false)	
 			{
-				it_h = bul_h.erase(it_h); 
+				itBull = bullHero.erase(itBull); 
 			}
 			else  
 			{
-				it_h++;
+				itBull++;
 			}
 		}
 
 		// Выстрелы врага
-		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
+		for (itEnemy = enemies.begin(); itEnemy != enemies.end(); itEnemy++)
 		{
-			if ((*it_enemy)->getLife())
+			if ((*itEnemy)->getLife())
 			{
-				if ((*it_enemy)->shoot_delay())
+				if ((*itEnemy)->shootDelay())
 				{
-					bul_e.push_back(new Bullet("enemy", (*it_enemy)->getposX(), (*it_enemy)->getposY()));
+					bullEnemy.push_back(new Bullet("enemy", (*itEnemy)->getPosX(), (*itEnemy)->getPosY()));
 				}
 				// Проверяем попадание во врага
-				for (it_h = bul_h.begin(); it_h != bul_h.end(); it_h++)
+				for (itBull = bullHero.begin(); itBull != bullHero.end(); itBull++)
 				{
-					if ((*it_enemy)->getRect().intersects((*it_h)->getRect()))
+					if ((*itEnemy)->getRect().intersects((*itBull)->getRect()))
 					{
 						clock3.restart();
-						(*it_enemy)->setHP(-(*it_h)->getDamage());
-						(*it_h)->setLife(false);
+						(*itEnemy)->setHP(-(*itBull)->getDamage());
+						(*itBull)->setLife(false);
 						hero.setScore(100);
 					}
 				}
@@ -129,37 +126,37 @@ int main()
 		}
 
 		// После убийства одного врага, добавляем "нового"  
-		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
+		for (itEnemy = enemies.begin(); itEnemy != enemies.end(); itEnemy++)
 		{
-			if (!((*it_enemy)->getLife()) && (time2 >= 800))
+			if (!((*itEnemy)->getLife()) && (time2 >= 1000))
 			{
 				clock3.restart();
-				(*it_enemy)->setLife(true);
+				(*itEnemy)->setLife(true);
 			}
 		}
 
 		// Оживляем пули врага
-		for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
+		for (itBull = bullEnemy.begin(); itBull != bullEnemy.end(); itBull++)
 		{
-			(*it_e)->update(time);
+			(*itBull)->update(time);
 		}
 
 		// Обработка попадания в героя
 		if (hero.getLife())
 		{
-			for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
+			for (itBull = bullEnemy.begin(); itBull != bullEnemy.end(); itBull++)
 			{
-				if (hero.getRect().intersects((*it_e)->getRect()))
+				if (hero.getRect().intersects((*itBull)->getRect()))
 				{
 					if (hero.getArmor())
 					{
-						hero.setArmor(-(*it_e)->getDamage());
+						hero.setArmor(-(*itBull)->getDamage());
 					}
 					else
 					{
-						hero.setHP(-(*it_e)->getDamage());
+						hero.setHP(-(*itBull)->getDamage());
 					}
-					(*it_e)->setLife(false);
+					(*itBull)->setLife(false);
 				}
 			}
 		}
@@ -180,68 +177,79 @@ int main()
 		}
 
 		// Удаляем пули врага, если они улетели за карту или попали в героя
-		for (it_e = bul_e.begin(); it_e != bul_e.end();)
+		for (itBull = bullEnemy.begin(); itBull != bullEnemy.end();)
 		{
-			if ((*it_e)->getLife() == false)	
+			if ((*itBull)->getLife() == false)	
 			{
-				it_e = bul_e.erase(it_e); 
+				itBull = bullEnemy.erase(itBull); 
 			}
 			else  
 			{
-				it_e++;
+				itBull++;
 			}
 		}
 		
+		// Оживляем бонус доп. жизней
 		HP.update(time);
+
+		// Оживляем бонус брони
 		Armor.update(time);
+
+		// Оживляем героя
 		hero.update(time);
 		
 		window.clear(); 
 
+		// Рисуем героя
 		if (hero.getLife())
 		{
-			window.draw(hero.getimage());
+			window.draw(hero.getImage());
 		}
 
+		// Рисуем бонус доп. жизни
 		if (HP.getLife())
 		{
-			window.draw(HP.getimage());
+			window.draw(HP.getImage());
 		}
 
+		// Рисуем бонус броню
 		if (Armor.getLife())
 		{
-			window.draw(Armor.getimage());
+			window.draw(Armor.getImage());
 		}
 
-		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
+		// Рисуем врагов
+		for (itEnemy = enemies.begin(); itEnemy != enemies.end(); itEnemy++)
 		{
-			if ((*it_enemy)->getLife())
+			if ((*itEnemy)->getLife())
 			{
-				window.draw((*it_enemy)->getimage());
+				window.draw((*itEnemy)->getImage());
 			}			
 		}
 
-		for (it_h = bul_h.begin(); it_h != bul_h.end(); it_h++)
+		// Рисуем пули героя
+		for (itBull = bullHero.begin(); itBull != bullHero.end(); itBull++)
 		{
-			if ((*it_h)->getLife())
-				window.draw((*it_h)->getimage());
+			if ((*itBull)->getLife())
+				window.draw((*itBull)->getImage());
 		}
 
-		for (it_e = bul_e.begin(); it_e != bul_e.end(); it_e++)
+		// Рисуем пули врагов
+		for (itBull = bullEnemy.begin(); itBull != bullEnemy.end(); itBull++)
 		{
-			if ((*it_e)->getLife())
-				window.draw((*it_e)->getimage());
+			if ((*itBull)->getLife())
+				window.draw((*itBull)->getImage());
 		}
 
 		// Если герой умер или враги смогли пролететь, то вы проиграли
-		for (it_enemy = enemies.begin(); it_enemy != enemies.end(); it_enemy++)
+		for (itEnemy = enemies.begin(); itEnemy != enemies.end(); itEnemy++)
 		{
-			if (((*it_enemy)->getposY() >= (height - size_enemy - 5)) || !(hero.getLife()))
+			if (((*itEnemy)->getPosY() >= (height - sizeEnemy - 5)) || !(hero.getLife()))
 			{
 				hero.setLife(false);
-				text_lose.setString("You are lose!");
-				text_lose.setPosition(150, height / 2 - 50);
-				window.draw(text_lose);
+				textLose.setString("You are lose!");
+				textLose.setPosition(150, height / 2 - 50);
+				window.draw(textLose);
 			}
 		}
 
@@ -249,10 +257,10 @@ int main()
 		if (hero.getArmor())
 		{
 			std::ostringstream playerArmorString;
-			playerArmorString << hero.getArmor_HP();
-			text_armor.setString("Armor: " + playerArmorString.str());
-			text_armor.setPosition(350, 0);
-			window.draw(text_armor);
+			playerArmorString << hero.getArmorHp();
+			textArmor.setString("Armor: " + playerArmorString.str());
+			textArmor.setPosition(350, 0);
+			window.draw(textArmor);
 		}
 		
 		// Вывод жизней и очков на экран
@@ -260,17 +268,32 @@ int main()
 		std::ostringstream playerScoreString;
 		playerHPString << hero.getHP();
 		playerScoreString << hero.getScore();
-		text_hp.setString("Health: " + playerHPString.str());
-		text_hp.setPosition(600, 0);
-		text_score.setString("Score: " + playerScoreString.str());
-		text_score.setPosition(10, 0);
-		window.draw(text_hp);
-		window.draw(text_score);
+		textHp.setString("Health: " + playerHPString.str());
+		textHp.setPosition(600, 0);
+		textScore.setString("Score: " + playerScoreString.str());
+		textScore.setPosition(10, 0);
+		window.draw(textHp);
+		window.draw(textScore);
 
 		window.display();
 
 	}
 
+	// Очистка памяти
+	for (itBull = bullHero.begin(); itBull != bullHero.end();)
+	{
+		itBull = bullHero.erase(itBull); 
+	}
+
+	for (itBull = bullEnemy.begin(); itBull != bullEnemy.end();)
+	{
+		itBull = bullEnemy.erase(itBull); 
+	}
+
+	for (itEnemy = enemies.begin(); itEnemy != enemies.end();)
+	{
+		itEnemy = enemies.erase(itEnemy); 
+	}
 
 	return 0;
 }
