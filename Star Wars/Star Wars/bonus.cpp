@@ -9,7 +9,7 @@ Bonus::Bonus(int t)
 
 	if (t == 0)
 	{
-		timer_count = 10 + rand() % 20;
+		timerCount = 10 + rand() % 20;
 		hp = 75;
 
 		texture.loadFromFile("images/health.png");
@@ -17,7 +17,7 @@ Bonus::Bonus(int t)
 
 	if (t == 1)
 	{
-		timer_count = 15 + rand() % 30;
+		timerCount = 20 + rand() % 35;
 
 		texture.loadFromFile("images/energy.png");
 	}
@@ -29,7 +29,7 @@ Bonus::Bonus(int t)
 
 void Bonus::load()
 {
-	posX = rand() % (weigth - size_bonus);
+	posX = rand() % (weigth - sizeBonus);
 	posY = 0;
 }
 
@@ -45,7 +45,7 @@ void Bonus::update(float time)
 		
 		sprite.setPosition(posX, posY);
 
-		if (posY >= (height - size_bonus))
+		if (posY >= (height - sizeBonus))
 		{ 
 			life = false; 
 		}
@@ -54,7 +54,7 @@ void Bonus::update(float time)
 	{
 		load();
 		timer = clock.getElapsedTime().asSeconds();
-		if (timer >= timer_count)
+		if (timer >= timerCount)
 		{
 			life = true;
 		}

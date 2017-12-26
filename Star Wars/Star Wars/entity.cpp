@@ -1,7 +1,7 @@
 // entity.cpp
 #include "entity.h"
 
-Sprite Entity::getimage()
+Sprite Entity::getImage()
 {
 	return sprite;
 }
@@ -40,12 +40,12 @@ void Entity::setHP(int h)
 	hp += h;
 }
 
-float Entity::getposX()
+float Entity::getPosX()
 {
 	return posX;
 }
 
-float Entity::getposY()
+float Entity::getPosY()
 {
 	return posY;
 }
@@ -54,39 +54,39 @@ FloatRect Entity::getRect()
 {
 	if (type == enemy) 
 	{
-		FloatRect FR(posX - size_enemy / 2, posY, size_enemy, size_enemy); 
+		FloatRect FR(posX - sizeEnemy / 2, posY, sizeEnemy, sizeEnemy); 
 		return FR;
 	}
 
 	if (type == hero) 
 	{
-		if (size_hero == 50)
+		if (sizeHero == 50)
 		{
-			FloatRect FR(posX - size_hero / 2, posY, size_hero, size_hero); 
+			FloatRect FR(posX - sizeHero / 2, posY, sizeHero, sizeHero); 
 			return FR;
 		}
 		else
 		{
-			FloatRect FR(posX - size_hero / 2 + 10, posY, size_hero, size_hero); 
+			FloatRect FR(posX - sizeHero / 2 + 10, posY, sizeHero, sizeHero); 
 			return FR;
 		}
 	}
 
 	if (type == bonus) 
 	{
-		FloatRect FR(posX - size_bonus / 2, posY, size_bonus, size_bonus); 
+		FloatRect FR(posX - sizeBonus / 2, posY, sizeBonus, sizeBonus); 
 		return FR;
 	}
 
-	if (type == bullet_e) 
+	if (type == bulletEnemy) 
 	{
-		FloatRect FR(posX, posY + 10 * size_bul, size_bul, 4 * size_bul); 
+		FloatRect FR(posX, posY + 10 * sizeBullet, sizeBullet, 4 * sizeBullet); 
 		return FR;
 	}
 
-	if (type == bullet_h) 
+	if (type == bulletHero) 
 	{
-		FloatRect FR(posX, posY, size_bul, 4 * size_bul); 
+		FloatRect FR(posX, posY, sizeBullet, 4 * sizeBullet); 
 		return FR;
 	}
 	

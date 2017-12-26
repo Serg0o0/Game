@@ -6,7 +6,7 @@ Enemy::Enemy()
 	hp = 100;
 	speed = 0.02;
 	type = enemy;
-	shoot_time = 2500;
+	shootTime = 2500;
 
 	texture.loadFromFile("images/enemy.png");
 	sprite.setTexture(texture);
@@ -17,7 +17,7 @@ Enemy::Enemy()
 
 void Enemy::load()
 {
-	posX = rand() % (weigth - size_enemy);
+	posX = (rand() % 13) * 60 + 10; // Выбирается позиция от 10 до 790 с шагом 60
 	posY = 0;
 }
 
@@ -27,10 +27,10 @@ void Enemy::update(float time)
 	{
 		dy = speed;
 
-		if ((posY >= 0) && (posY < (height - size_enemy)))
+		if ((posY >= 0) && (posY < (height - sizeEnemy)))
 			posY += dy*time;
 
-		if (posY >= (height - size_enemy)) 
+		if (posY >= (height - sizeEnemy)) 
 		{
 			load();
 		}
@@ -45,10 +45,10 @@ void Enemy::update(float time)
 	}
 }
 
-bool Enemy::shoot_delay()
+bool Enemy::shootDelay()
 {
-	shoot_time = time.getElapsedTime().asMilliseconds();
-	if (shoot_time >= delay)
+	shootTime = time.getElapsedTime().asMilliseconds();
+	if (shootTime >= delay)
 	{
 		time.restart();
 		return true;

@@ -3,11 +3,11 @@
 
 Hero::Hero() 
 {
-	size_hero = 50;
+	sizeHero = 50;
 	state = stay;
 	hp = 100;
-	posX = (weigth - size_hero) / 2;
-	posY = height - size_hero;
+	posX = (weigth - sizeHero) / 2;
+	posY = height - sizeHero;
 	speed = 0.3;
 	type = hero;
 	score = 0;
@@ -48,13 +48,13 @@ void Hero::update(float time)
 		if ((posX > 0) && (dx < 0)) 
 			posX += dx*time;
 
-		if ((posX < (weigth - size_hero)) && (dx > 0)) 
+		if ((posX < (weigth - sizeHero)) && (dx > 0)) 
 			posX += dx*time;
 
 		if ((posY > (2 * height / 3)) && (dy < 0)) 
 			posY += dy*time;
 
-		if ((posY < (height - size_hero)) && (dy > 0)) 
+		if ((posY < (height - sizeHero)) && (dy > 0)) 
 			posY += dy*time;
 
 		state = stay;
@@ -68,20 +68,20 @@ void Hero::update(float time)
 
 		if (armor)
 		{
-			texture.loadFromFile("images/armor.png");
+			texture.loadFromFile("images/armor1.png");
 			sprite.setTexture(texture, true);
-			size_hero = 60;
+			sizeHero = 60;
 		}
 		else
 		{
 			texture.loadFromFile("images/hero.png");
 			sprite.setTexture(texture, true);
-			size_hero = 50;
+			sizeHero = 50;
 		}
 
-		if (armor_hp <= 0)
+		if (armorHp <= 0)
 		{ 
-			armor_hp = 0;
+			armorHp = 0;
 			armor = false; 
 		}
 	}
@@ -115,23 +115,24 @@ bool Hero::getArmor()
 	return armor;
 }
 
-int Hero::getArmor_HP()
+int Hero::getArmorHp()
 {
-	return armor_hp;
+	return armorHp;
 }
 
 void Hero::setArmor(bool a)
 {
-	armor = a;
-	armor_hp = 300;
 	if (!getArmor())
 	{
 		posX -= 5;
 		posY -= 10;
 	}
+
+	armor = a;
+	armorHp = 300;
 }
 
 void Hero::setArmor(int a)
 {
-	armor_hp += a;
+	armorHp += a;
 }

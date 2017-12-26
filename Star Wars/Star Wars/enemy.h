@@ -7,14 +7,14 @@
 class Enemy : public Entity
 {
 private:
-	int shoot_time;
+	int shootTime;
 	Clock time;
 
 public:
 	Enemy();
 	void update(float);
 	void load();
-	bool shoot_delay();
+	bool shootDelay();
 };
 
 #endif

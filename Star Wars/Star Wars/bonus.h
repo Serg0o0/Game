@@ -7,7 +7,7 @@
 class Bonus : public Entity
 {
 private:
-	int timer, timer_count;
+	int timer, timerCount;
 	Clock clock;
 
 public:

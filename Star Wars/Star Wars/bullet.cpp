@@ -10,19 +10,19 @@ Bullet::Bullet(String name, float x, float y)
 
 	if (Name == "enemy")
 	{
-		type = bullet_e;
+		type = bulletEnemy;
 		speed = 0.1;
 
-		texture.loadFromFile("images/bullet_enemy.png");
+		texture.loadFromFile("images/bulletEnemy.png");
 		sprite.setTexture(texture);
 	}
 
 	if (Name == "hero")
 	{
-		type = bullet_h;
+		type = bulletHero;
 		speed = 0.5;
 
-		texture.loadFromFile("images/bullet_hero.png");
+		texture.loadFromFile("images/bulletHero.png");
 		sprite.setTexture(texture);
 	}
 }
@@ -42,7 +42,7 @@ void Bullet::update(float time)
 
 			posY += dy*time;
 
-			sprite.setPosition(posX + size_enemy / 2 - size_bul / 2, posY + size_enemy);
+			sprite.setPosition(posX + sizeEnemy / 2 - sizeBullet / 2, posY + sizeEnemy);
 
 			if (posY >= height) 
 			{
@@ -56,7 +56,7 @@ void Bullet::update(float time)
 
 			posY += dy*time;
 
-			sprite.setPosition(posX + size_hero / 2 - size_bul / 2, posY - (4 * size_bul));
+			sprite.setPosition(posX + sizeHero / 2 - sizeBullet / 2, posY - (4 * sizeBullet));
 
 			if (posY <= 0) 
 			{
